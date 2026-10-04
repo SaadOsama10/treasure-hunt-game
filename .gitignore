@@ -1,0 +1,14 @@
+# Build output
+build/
+dist/
+*.class
+
+# NetBeans / IDE
+nbproject/private/
+.idea/
+
+# Saved scores (created when you play)
+score.txt
+
+# OS
+.DS_Store
