@@ -127,7 +127,6 @@ Scores are saved to `score.txt` in the directory you run the game from.
 ## Notes
 
 - **Portability fix.** The original code loaded every image and the score file from hard-coded Windows paths (`A:\java projects\testgame\...`), so it only ran on the developers' machine. Images now load as classpath resources (`getResource("/testgame/images/...")`) and scores are kept in `score.txt` in the working directory. No gameplay changes were made.
-- **Known issue.** The Level 2 screen still shows "level: 1" in its info panel, a leftover label in `ZeineddinRadiGameBoard`. Saved Level 2 scores are correctly recorded as "Level 2".
 
 ## Credits
 

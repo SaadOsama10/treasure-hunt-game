@@ -67,7 +67,7 @@ public class ZeineddinRadiGameBoard extends JPanel {
         l1.setBounds(700, 11, 150, 40);
         this.add(l1);
         l1.setForeground(Color.WHITE);
-        JLabel l2 = new JLabel("level: 1 ");
+        JLabel l2 = new JLabel("level: 2 ");
         l2.setBounds(700, 53, 200, 50);
         l2.setOpaque(false);
         l2.setFont(f1);
