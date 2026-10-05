@@ -2,6 +2,12 @@
 
 **A two-level dice-roll treasure board game in Java Swing. The game boards are built on custom linked lists and the scoreboard on a binary search tree, made for a Data Structures course.**
 
+<p align="center">
+  <a href="https://saadosama10.github.io/treasure-hunt-game/play/"><img src="https://img.shields.io/badge/%F0%9F%8E%AE%20Play%20in%20your%20browser-open%20the%20game-7aa2f7?style=for-the-badge&labelColor=1a1b27" alt="Play in your browser" /></a>
+</p>
+
+<p align="center"><sub>Runs through <a href="https://cheerpj.com/">CheerpJ</a> (Java in WebAssembly): no install, no server. The first load downloads the Java runtime and may take a few seconds (up to a minute on a slow connection).</sub></p>
+
 <p>
   <img src="https://img.shields.io/badge/Java-1a1b27?style=flat-square&logo=openjdk&logoColor=7aa2f7" alt="Java" />
   <img src="https://img.shields.io/badge/Swing-1a1b27?style=flat-square" alt="Swing" />
@@ -19,6 +25,12 @@ Treasure Hunt Adventure is a pirate-themed board game. You enter a username, rol
 The project's focus is the data structures behind the game. Both boards are custom generic **linked lists** (singly linked for Level 1, doubly linked for Level 2), and the scoreboard is a **binary search tree** built from the saved scores. No Java collections are used for any of them.
 
 <p align="center"><img src="screenshots/menu.png" width="640" alt="Main menu" /></p>
+
+## Play in your browser
+
+The game also runs on GitHub Pages: **https://saadosama10.github.io/treasure-hunt-game/play/**. The unchanged Swing code is compiled with `--release 11` into `docs/play/treasure.jar` and executed client-side by [CheerpJ](https://cheerpj.com/) 4.3 (free for personal and open-source projects). Scores are saved in your browser's storage (CheerpJ's `/files/` filesystem), so clearing site data erases them. Use a desktop browser; the game is mouse-only.
+
+<p align="center"><img src="screenshots/browser-version.png" width="640" alt="The game running in the browser" /></p>
 
 ## How to Play
 
@@ -120,6 +132,8 @@ java -cp build/classes testgame.ZeineddinRadiMain
 
 Scores are saved to `score.txt` in the directory you run the game from.
 
+**Browser build:** `./build-web.sh` rebuilds `docs/play/treasure.jar` (compiled with `--release 11`, which CheerpJ supports). To test the page locally, serve `docs/` with a static server that supports HTTP Range requests (for example `npx http-server docs`) and open `/play/`.
+
 ## Project Report
 
 [`docs/report.pdf`](docs/report.pdf) is the original course report (11 pages). It covers each screen, the data-structure design, a design revision made after instructor feedback, and the challenges the team faced. Student numbers have been redacted.
@@ -127,6 +141,7 @@ Scores are saved to `score.txt` in the directory you run the game from.
 ## Notes
 
 - **Portability fix.** The original code loaded every image and the score file from hard-coded Windows paths (`A:\java projects\testgame\...`), so it only ran on the developers' machine. Images now load as classpath resources (`getResource("/testgame/images/...")`) and scores are kept in `score.txt` in the working directory. No gameplay changes were made.
+- **Browser version.** The only code change for the CheerpJ build is that the score file location is read from the `testgame.scoreFile` system property (default `score.txt`, so desktop behaviour is unchanged); the web page sets it to `/files/score.txt`.
 
 ## Credits
 
