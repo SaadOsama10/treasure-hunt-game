@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Treasure Hunt Adventure — play in your browser</title>
+  <meta name="description" content="A two-level dice-roll treasure board game written in Java Swing, running in the browser through CheerpJ (Java in WebAssembly)." />
+  <meta property="og:title" content="Treasure Hunt Adventure" />
+  <meta property="og:description" content="Play the Java Swing treasure board game right in your browser." />
+  <meta property="og:image" content="https://saadosama10.github.io/treasure-hunt-game/play/preview.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%BA%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root { --bg:#1a1b27; --panel:#24283b; --text:#c0caf5; --muted:#9aa5ce; --accent:#7aa2f7; --accent2:#bb9af7; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+    header { padding:28px 16px 8px; text-align:center; background:linear-gradient(180deg,#3b2f7a33,transparent); }
+    h1 { margin:0 0 6px; font-size:clamp(1.6rem,4vw,2.4rem); }
+    header p { margin:0 auto; max-width:46rem; color:var(--muted); }
+    main { max-width:1000px; margin:0 auto; padding:16px; }
+    #stage { position:relative; margin:12px auto; width:min(100%,940px); min-height:660px; background:var(--panel); border:1px solid #3b4261; border-radius:12px; overflow:auto; }
+    #loading { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:24px; pointer-events:none; }
+    #loading .spin { width:38px; height:38px; border:4px solid #3b4261; border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    #error { display:none; color:#f7768e; }
+    #cheerpjDisplay { position:relative; }
+    .cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
+    @media (max-width:720px) { .cols { grid-template-columns:1fr; } }
+    section { background:var(--panel); border:1px solid #3b4261; border-radius:12px; padding:16px 20px; }
+    h2 { margin:0 0 8px; font-size:1.1rem; color:var(--accent); }
+    ol, ul { margin:0; padding-left:1.2rem; } li { margin:4px 0; }
+    a { color:var(--accent); } .btn { display:inline-block; margin:6px 6px 0 0; padding:8px 16px; border-radius:8px; background:var(--accent); color:#1a1b27; font-weight:600; text-decoration:none; }
+    .btn.alt { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+    footer { text-align:center; color:var(--muted); font-size:.9rem; padding:16px 16px 32px; }
+    .note { color:var(--muted); font-size:.9rem; text-align:center; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🗺️ Treasure Hunt Adventure</h1>
+    <p>A two-level dice-roll board game in Java Swing, built on custom linked lists and a binary search tree. It runs here, in your browser, with CheerpJ (Java in WebAssembly): no install, no server.</p>
+  </header>
+
+  <main>
+    <p class="note">⏳ The first load downloads the Java runtime and can take a few seconds (up to a minute on a slow connection). Use a desktop browser; the game is mouse-only.</p>
+
+    <div id="stage">
+      <div id="loading">
+        <div class="spin" aria-hidden="true"></div>
+        <div id="loadingText"><b>Loading the game…</b><br/>Starting Java in your browser (the first load can take a few seconds, up to a minute on a slow connection).</div>
+        <div id="error"></div>
+      </div>
+      <div id="cheerpjDisplay"></div>
+    </div>
+
+    <div class="cols">
+      <section>
+        <h2>How to play</h2>
+        <ol>
+          <li>Click <b>Start Game</b>, type a username and press <b>Enter</b>.</li>
+          <li><b>Level 1:</b> click <b>Roll Dice</b>. Your pirate walks that many tiles: chest <b>+10</b>, trap <b>−5</b>, empty tile nothing.</li>
+          <li>Reach the last tile, then choose to continue to <b>Level 2</b>, which adds tiles that push you forward or backward.</li>
+          <li>Open the <b>Score Board</b>, enter a username and see that player's scores, best and worst.</li>
+        </ol>
+      </section>
+      <section>
+        <h2>About</h2>
+        <ul>
+          <li>Data Structures course project by Saed O S Radi and Abdulrahman Zeineddin (FSMVU).</li>
+          <li>Boards are generic linked lists; the scoreboard is a binary search tree.</li>
+          <li>Scores are kept in <b>your browser's</b> storage (CheerpJ <code>/files/</code>); clearing site data erases them.</li>
+        </ul>
+        <a class="btn" href="https://github.com/SaadOsama10/treasure-hunt-game">View the repo</a>
+        <a class="btn alt" href="https://github.com/SaadOsama10/treasure-hunt-game/blob/main/docs/report.pdf">Project report</a>
+      </section>
+    </div>
+  </main>
+
+  <footer>Powered by <a href="https://cheerpj.com/">CheerpJ</a> · © Saed O S Radi, Abdulrahman Zeineddin</footer>
+
+  <script src="https://cjrtnc.leaningtech.com/4.3/loader.js"></script>
+  <script>
+    (async function () {
+      const err = document.getElementById("error");
+      try {
+        await cheerpjInit({
+          version: 11,
+          // The game reads this property; on the desktop it falls back to ./score.txt.
+          javaProperties: ["testgame.scoreFile=/files/score.txt"]
+        });
+        const display = document.getElementById("cheerpjDisplay");
+        cheerpjCreateDisplay(920, 640, display);
+        // "/app/" maps to the web server root, so build the jar path from this page's URL.
+        const jar = "/app" + new URL("treasure.jar", location.href).pathname;
+        const loading = document.getElementById("loading");
+        // Hide the loading card once the game window has replaced CheerpJ's "Graphics system is initializing" notice.
+        const timer = setInterval(function () {
+          const text = display.innerText || "";
+          if (text.trim() && text.indexOf("Graphics system is initializing") === -1) {
+            loading.style.display = "none";
+            clearInterval(timer);
+          }
+        }, 500);
+        await cheerpjRunJar(jar);
+      } catch (e) {
+        document.querySelector("#loading .spin").style.display = "none";
+        document.getElementById("loadingText").style.display = "none";
+        err.style.display = "block";
+        err.textContent = "Could not start the game: " + e + ". Try a current desktop Chrome, Edge or Firefox.";
+      }
+    })();
+  </script>
+</body>
+</html>
