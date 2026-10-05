@@ -207,7 +207,7 @@ public class ZeineddinRadiMenu extends JFrame {
     }
 
     public void scoreboardfun() {
-        File file = new File("score.txt");
+        File file = new File(ZeineddinRadiFiles.scoreFile());
         try {
             Scanner s = new Scanner(file);
             while (s.hasNextLine()) {

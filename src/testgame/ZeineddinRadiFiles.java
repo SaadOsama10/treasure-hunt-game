@@ -25,9 +25,18 @@ public class ZeineddinRadiFiles {
 
     }
 
+    /**
+     * Where scores are stored. Desktop: score.txt in the working directory.
+     * In the browser (CheerpJ) the page sets -Dtestgame.scoreFile=/files/score.txt,
+     * which lives in CheerpJ's persistent virtual filesystem.
+     */
+    static String scoreFile() {
+        return System.getProperty("testgame.scoreFile", "score.txt");
+    }
+
     public void saveToFile() {
         try (
-                FileWriter fw = new FileWriter("score.txt", true); PrintWriter pr = new PrintWriter(fw)) {
+                FileWriter fw = new FileWriter(scoreFile(), true); PrintWriter pr = new PrintWriter(fw)) {
             pr.print(user);
             pr.print(", " + level + ", ");
             pr.println(score);
